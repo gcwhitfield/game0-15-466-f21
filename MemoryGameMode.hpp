@@ -23,22 +23,7 @@ struct MemoryGameMode : Mode {
 
 	//----- game state -----
 	glm::vec2 court_radius = glm::vec2(7.0f, 5.0f);
-    /*
-	glm::vec2 paddle_radius = glm::vec2(0.2f, 1.0f);
-	glm::vec2 ball_radius = glm::vec2(0.2f, 0.2f);
 
-	glm::vec2 left_paddle = glm::vec2(-court_radius.x + 0.5f, 0.0f);
-	glm::vec2 right_paddle = glm::vec2( court_radius.x - 0.5f, 0.0f);
-
-	glm::vec2 ball = glm::vec2(0.0f, 0.0f);
-	glm::vec2 ball_velocity = glm::vec2(-1.0f, 0.0f);
-
-	uint32_t left_score = 0;
-	uint32_t right_score = 0;
-
-	float ai_offset = 0.0f;
-	float ai_offset_update = 0.0f;
-    */
 	// ----- draw -----
 	
 		//draw functions will work on vectors of vertices, defined as follows:
@@ -54,9 +39,9 @@ struct MemoryGameMode : Mode {
 	//vertices will be accumulated into this list and then uploaded+drawn at the end of the 'draw' function:
 	std::vector< Vertex > vertices;
 
-	//inline helper function for rectangle drawing:
+	// inline helper functions for drawing shapes. The triangles are being counter clockwise.
+
 	void draw_rectangle (glm::vec2 const &center, glm::vec2 const &radius, glm::u8vec4 const &color) {
-		//draw rectangle as two CCW-oriented triangles:
 		vertices.emplace_back(glm::vec3(center.x-radius.x, center.y-radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
 		vertices.emplace_back(glm::vec3(center.x+radius.x, center.y-radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
 		vertices.emplace_back(glm::vec3(center.x+radius.x, center.y+radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
@@ -65,15 +50,19 @@ struct MemoryGameMode : Mode {
 		vertices.emplace_back(glm::vec3(center.x+radius.x, center.y+radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
 		vertices.emplace_back(glm::vec3(center.x-radius.x, center.y+radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
 	};
-	
-	//----- pretty gradient trails -----
 
-	float trail_length = 1.3f;
-	std::deque< glm::vec3 > ball_trail; //stores (x,y,age), oldest elements first
+    void draw_quadrilateral (glm::vec2 const &top_left, glm::vec2 const &top_right, glm::vec2 const &bot_left, glm::vec2 const &bot_right, glm::u8vec4 const &color) {
+        // the body of this function was copied largely from Professor McCann's start code for 'draw_rectangle's
+		vertices.emplace_back(glm::vec3(top_left.x, top_left.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
+		vertices.emplace_back(glm::vec3(top_right.x, top_right.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
+		vertices.emplace_back(glm::vec3(bot_right.x, bot_right.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
+
+		vertices.emplace_back(glm::vec3(top_left.x, top_left.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
+		vertices.emplace_back(glm::vec3(bot_right.x, bot_right.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
+		vertices.emplace_back(glm::vec3(bot_left.x, bot_left.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
+    };
 
 	//----- opengl assets / helpers ------
-
-
 
 	//Shader program that draws transformed, vertices tinted with vertex colors:
 	ColorTextureProgram color_texture_program;
@@ -92,5 +81,4 @@ struct MemoryGameMode : Mode {
 	// computed in draw() as the inverse of OBJECT_TO_CLIP
 	// (stored here so that the mouse handling code can use it to position the paddle)
 
-	
 };
