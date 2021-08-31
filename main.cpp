@@ -108,17 +108,17 @@ int main(int argc, char **argv) {
 
 	//This will loop until the current mode is set to null:
 	while (Mode::current) {
-		//every pass through the game loop creates one frame of output
-		//  by performing three steps:
+		// every pass through the game loop creates one frame of output
+		// by performing three steps:
 
-		{ //(1) process any events that are pending
+		{ // (1) process any events that are pending
 			static SDL_Event evt;
 			while (SDL_PollEvent(&evt) == 1) {
-				//handle resizing:
+				// handle resizing:
 				if (evt.type == SDL_WINDOWEVENT && evt.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
 					on_resize();
 				}
-				//handle input:
+				// handle input:
 				if (Mode::current && Mode::current->handle_event(evt, window_size)) {
 					// mode handled it; great
 				} else if (evt.type == SDL_QUIT) {
@@ -149,20 +149,20 @@ int main(int argc, char **argv) {
 			float elapsed = std::chrono::duration< float >(current_time - previous_time).count();
 			previous_time = current_time;
 
-			//if frames are taking a very long time to process,
-			//lag to avoid spiral of death:
+			// if frames are taking a very long time to process,
+			// lag to avoid spiral of death:
 			elapsed = std::min(0.1f, elapsed);
 
 			Mode::current->update(elapsed);
 			if (!Mode::current) break;
 		}
 
-		{ //(3) call the current mode's "draw" function to produce output:
+		{ // (3) call the current mode's "draw" function to produce output:
 		
 			Mode::current->draw(drawable_size);
 		}
 
-		//Wait until the recently-drawn frame is shown before doing it all again:
+		// Wait until the recently-drawn frame is shown before doing it all again:
 		SDL_GL_SwapWindow(window);
 	}
 

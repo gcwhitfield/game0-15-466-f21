@@ -39,14 +39,9 @@ struct PongMode : Mode {
 	float ai_offset = 0.0f;
 	float ai_offset_update = 0.0f;
 
-	//----- pretty gradient trails -----
-
-	float trail_length = 1.3f;
-	std::deque< glm::vec3 > ball_trail; //stores (x,y,age), oldest elements first
-
-	//----- opengl assets / helpers ------
-
-	//draw functions will work on vectors of vertices, defined as follows:
+	// ----- draw -----
+	
+		//draw functions will work on vectors of vertices, defined as follows:
 	struct Vertex {
 		Vertex(glm::vec3 const &Position_, glm::u8vec4 const &Color_, glm::vec2 const &TexCoord_) :
 			Position(Position_), Color(Color_), TexCoord(TexCoord_) { }
@@ -55,6 +50,30 @@ struct PongMode : Mode {
 		glm::vec2 TexCoord;
 	};
 	static_assert(sizeof(Vertex) == 4*3 + 1*4 + 4*2, "PongMode::Vertex should be packed");
+
+	//vertices will be accumulated into this list and then uploaded+drawn at the end of the 'draw' function:
+	std::vector< Vertex > vertices;
+
+	//inline helper function for rectangle drawing:
+	void draw_rectangle (glm::vec2 const &center, glm::vec2 const &radius, glm::u8vec4 const &color) {
+		//draw rectangle as two CCW-oriented triangles:
+		vertices.emplace_back(glm::vec3(center.x-radius.x, center.y-radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
+		vertices.emplace_back(glm::vec3(center.x+radius.x, center.y-radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
+		vertices.emplace_back(glm::vec3(center.x+radius.x, center.y+radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
+
+		vertices.emplace_back(glm::vec3(center.x-radius.x, center.y-radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
+		vertices.emplace_back(glm::vec3(center.x+radius.x, center.y+radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
+		vertices.emplace_back(glm::vec3(center.x-radius.x, center.y+radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
+	};
+	
+	//----- pretty gradient trails -----
+
+	float trail_length = 1.3f;
+	std::deque< glm::vec3 > ball_trail; //stores (x,y,age), oldest elements first
+
+	//----- opengl assets / helpers ------
+
+
 
 	//Shader program that draws transformed, vertices tinted with vertex colors:
 	ColorTextureProgram color_texture_program;
@@ -73,4 +92,5 @@ struct PongMode : Mode {
 	// computed in draw() as the inverse of OBJECT_TO_CLIP
 	// (stored here so that the mouse handling code can use it to position the paddle)
 
+	
 };
