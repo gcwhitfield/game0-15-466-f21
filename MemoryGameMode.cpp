@@ -1,4 +1,4 @@
-#include "PongMode.hpp"
+#include "MemoryGameMode.hpp"
 
 //for the GL_ERRORS() macro:
 #include "gl_errors.hpp"
@@ -8,13 +8,14 @@
 
 #include <random>
 
-PongMode::PongMode() {
-
+MemoryGameMode::MemoryGameMode() {
+    
+    /*
 	//set up trail as if ball has been here for 'forever':
 	ball_trail.clear();
 	ball_trail.emplace_back(ball, trail_length);
 	ball_trail.emplace_back(ball, 0.0f);
-
+    */
 	
 	//----- allocate OpenGL resources -----
 	{ //vertex buffer:
@@ -34,7 +35,7 @@ PongMode::PongMode() {
 		//set vertex_buffer as the source of glVertexAttribPointer() commands:
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 
-		//set up the vertex array object to describe arrays of PongMode::Vertex:
+		//set up the vertex array object to describe arrays of MemoryGameMode::Vertex:
 		glVertexAttribPointer(
 			color_texture_program.Position_vec4, //attribute
 			3, //size
@@ -104,7 +105,7 @@ PongMode::PongMode() {
 	}
 }
 
-PongMode::~PongMode() {
+MemoryGameMode::~MemoryGameMode() {
 
 	//----- free OpenGL resources -----
 	glDeleteBuffers(1, &vertex_buffer);
@@ -117,26 +118,28 @@ PongMode::~PongMode() {
 	white_tex = 0;
 }
 
-bool PongMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
+bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
 
 	if (evt.type == SDL_MOUSEMOTION) {
 		//convert mouse from window pixels (top-left origin, +y is down) to clip space ([-1,1]x[-1,1], +y is up):
-		glm::vec2 clip_mouse = glm::vec2(
+		/*
+        glm::vec2 clip_mouse = glm::vec2(
 			(evt.motion.x + 0.5f) / window_size.x * 2.0f - 1.0f,
 			(evt.motion.y + 0.5f) / window_size.y *-2.0f + 1.0f
 		);
-		left_paddle.y = (clip_to_court * glm::vec3(clip_mouse, 1.0f)).y;
+		 //left_paddle.y = (clip_to_court * glm::vec3(clip_mouse, 1.0f)).y;
+         */
 	}
 
 	return false;
 }
 
-void PongMode::update(float elapsed) {
+void MemoryGameMode::update(float elapsed) {
 
 	static std::mt19937 mt; //mersenne twister pseudo-random number generator
 
 	//----- paddle update -----
-
+    /*
 	{ //right player ai:
 		ai_offset_update -= elapsed;
 		if (ai_offset_update < elapsed) {
@@ -167,9 +170,10 @@ void PongMode::update(float elapsed) {
 	speed_multiplier = std::min(speed_multiplier, 10.0f);
 
 	ball += elapsed * speed_multiplier * ball_velocity;
+    */
 
 	//---- collision handling ----
-
+    /*
 	//paddles:
 	auto paddle_vs_ball = [this](glm::vec2 const &paddle) {
 		//compute area of overlap:
@@ -205,6 +209,8 @@ void PongMode::update(float elapsed) {
 	paddle_vs_ball(left_paddle);
 	paddle_vs_ball(right_paddle);
 
+    */
+    /*
 	//court walls:
 	if (ball.y > court_radius.y - ball_radius.y) {
 		ball.y = court_radius.y - ball_radius.y;
@@ -233,9 +239,10 @@ void PongMode::update(float elapsed) {
 			right_score += 1;
 		}
 	}
-
+    */
 	//----- gradient trails -----
 
+    /*
 	//age up all locations in ball trail:
 	for (auto &t : ball_trail) {
 		t.z += elapsed;
@@ -248,14 +255,15 @@ void PongMode::update(float elapsed) {
 	while (ball_trail.size() >= 2 && ball_trail[1].z > trail_length) {
 		ball_trail.pop_front();
 	}
+    */
 }
 
-void PongMode::draw(glm::uvec2 const &drawable_size) {
+void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 	//some nice colors from the course web page:
 	#define HEX_TO_U8VEC4( HX ) (glm::u8vec4( (HX >> 24) & 0xff, (HX >> 16) & 0xff, (HX >> 8) & 0xff, (HX) & 0xff ))
 	const glm::u8vec4 bg_color = HEX_TO_U8VEC4(0x193b59ff);
 	const glm::u8vec4 fg_color = HEX_TO_U8VEC4(0xf2d2b6ff);
-	const glm::u8vec4 shadow_color = HEX_TO_U8VEC4(0xf2ad94ff);
+	//const glm::u8vec4 shadow_color = HEX_TO_U8VEC4(0xf2ad94ff);
 	const std::vector< glm::u8vec4 > trail_colors = {
 		HEX_TO_U8VEC4(0xf2ad9488),
 		HEX_TO_U8VEC4(0xf2897288),
@@ -265,7 +273,7 @@ void PongMode::draw(glm::uvec2 const &drawable_size) {
 
 	//other useful drawing constants:
 	const float wall_radius = 0.05f;
-	const float shadow_offset = 0.07f;
+	// const float shadow_offset = 0.07f;
 	const float padding = 0.14f; //padding between outside of walls and edge of window
 
 	//---- compute vertices to draw ----
@@ -274,8 +282,9 @@ void PongMode::draw(glm::uvec2 const &drawable_size) {
 
 	//shadows for everything (except the trail):
 
-	glm::vec2 s = glm::vec2(0.0f,-shadow_offset);
+	// glm::vec2 s = glm::vec2(0.0f,-shadow_offset);
 
+    /*
 	draw_rectangle(glm::vec2(-court_radius.x-wall_radius, 0.0f)+s, glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), shadow_color);
 	draw_rectangle(glm::vec2( court_radius.x+wall_radius, 0.0f)+s, glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), shadow_color);
 	draw_rectangle(glm::vec2( 0.0f,-court_radius.y-wall_radius)+s, glm::vec2(court_radius.x, wall_radius), shadow_color);
@@ -283,7 +292,9 @@ void PongMode::draw(glm::uvec2 const &drawable_size) {
 	draw_rectangle(left_paddle+s, paddle_radius, shadow_color);
 	draw_rectangle(right_paddle+s, paddle_radius, shadow_color);
 	draw_rectangle(ball+s, ball_radius, shadow_color);
+    */
 
+    /*
 	//ball's trail:
 	if (ball_trail.size() >= 2) {
 		//start it at second element so there is always something before it to interpolate from:
@@ -327,6 +338,7 @@ void PongMode::draw(glm::uvec2 const &drawable_size) {
 			draw_rectangle(at, ball_radius, color);
 		}
 	}
+    */
 
 	//solid objects:
 
@@ -337,22 +349,24 @@ void PongMode::draw(glm::uvec2 const &drawable_size) {
 	draw_rectangle(glm::vec2( 0.0f, court_radius.y+wall_radius), glm::vec2(court_radius.x, wall_radius), fg_color);
 
 	//paddles:
+    /*
 	draw_rectangle(left_paddle, paddle_radius, fg_color);
 	draw_rectangle(right_paddle, paddle_radius, fg_color);
-	
+	*/
 
 	//ball:
-	draw_rectangle(ball, ball_radius, fg_color);
+	// draw_rectangle(ball, ball_radius, fg_color);
 
 	//scores:
 	glm::vec2 score_radius = glm::vec2(0.1f, 0.1f);
+    /*
 	for (uint32_t i = 0; i < left_score; ++i) {
 		draw_rectangle(glm::vec2( -court_radius.x + (2.0f + 3.0f * i) * score_radius.x, court_radius.y + 2.0f * wall_radius + 2.0f * score_radius.y), score_radius, fg_color);
 	}
 	for (uint32_t i = 0; i < right_score; ++i) {
 		draw_rectangle(glm::vec2( court_radius.x - (2.0f + 3.0f * i) * score_radius.x, court_radius.y + 2.0f * wall_radius + 2.0f * score_radius.y), score_radius, fg_color);
 	}
-
+    */
 
 
 	//------ compute court-to-window transform ------
