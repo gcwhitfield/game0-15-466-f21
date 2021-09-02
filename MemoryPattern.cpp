@@ -16,3 +16,12 @@ MemoryPattern::MemoryPattern(int len)
     }
 }
 
+void MemoryPattern::update(float elapsed_time)
+{
+
+}
+
+void MemoryPattern::beginDrawing()
+{
+    // 1) calculate the amount of time that is needed to draw the entire pattern
+}

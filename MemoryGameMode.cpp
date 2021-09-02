@@ -137,7 +137,7 @@ bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window
 void MemoryGameMode::update(float elapsed) {
 
 	static std::mt19937 mt; //mersenne twister pseudo-random number generator
-
+	pattern.update(elapsed);
 }
 
 void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
@@ -217,49 +217,53 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 		glm::vec2(center.x, center.y)
 	);
 
-	//---- actual drawing ----
+	// ---- actual drawing ----
 
-	//clear the color buffer:
+	// clear the color buffer:
 	glClearColor(bg_color.r / 255.0f, bg_color.g / 255.0f, bg_color.b / 255.0f, bg_color.a / 255.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	//use alpha blending:
+	// use alpha blending:
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//don't use the depth test:
+	// don't use the depth test:
 	glDisable(GL_DEPTH_TEST);
 
-	//upload vertices to vertex_buffer:
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer); //set vertex_buffer as current
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STREAM_DRAW); //upload vertices array
+	// upload vertices to vertex_buffer:
+	for (auto v = pattern.vertices.begin(); v < pattern.vertices.end(); v++)
+	{
+		vertex_buffer.emplace_back(v);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer); // set vertex_buffer as current
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STREAM_DRAW); // upload vertices array
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	//set color_texture_program as current program:
+	// set color_texture_program as current program:
 	glUseProgram(color_texture_program.program);
 
-	//upload OBJECT_TO_CLIP to the proper uniform location:
+	// upload OBJECT_TO_CLIP to the proper uniform location:
 	glUniformMatrix4fv(color_texture_program.OBJECT_TO_CLIP_mat4, 1, GL_FALSE, glm::value_ptr(court_to_clip));
 
-	//use the mapping vertex_buffer_for_color_texture_program to fetch vertex data:
+	// use the mapping vertex_buffer_for_color_texture_program to fetch vertex data:
 	glBindVertexArray(vertex_buffer_for_color_texture_program);
 
-	//bind the solid white texture to location zero so things will be drawn just with their colors:
+	// bind the solid white texture to location zero so things will be drawn just with their colors:
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, white_tex);
 
-	//run the OpenGL pipeline:
+	// run the OpenGL pipeline:
 	glDrawArrays(GL_TRIANGLES, 0, GLsizei(vertices.size()));
 
-	//unbind the solid white texture:
+	// unbind the solid white texture:
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	//reset vertex array to none:
+	// reset vertex array to none:
 	glBindVertexArray(0);
 
-	//reset current program to none:
+	// reset current program to none:
 	glUseProgram(0);
 	
 
-	GL_ERRORS(); //PARANOIA: print errors just in case we did something wrong.
+	GL_ERRORS(); // PARANOIA: print errors just in case we did something wrong.
 
 }

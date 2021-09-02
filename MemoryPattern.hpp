@@ -14,8 +14,7 @@
 //
 // ----- drawing -----
 // The MemoryGameMode calls MemoryPattern.update every frame. 
-// MemoryPattern.update 
-// stores information about 
+// MemoryPattern.update stores information about 
 class MemoryPattern {
 
     public:
@@ -36,7 +35,21 @@ class MemoryPattern {
         MemoryPattern(int len);
         ~MemoryPattern();
 
-        // drawing 
+        bool isDoneDrawing() { return _t >= _drawDuration; };
+        bool isDrawing() { return _t > 0.0f && _t < _drawDuration; };
         
+        void beginDrawing();
+
+        void update(float elapsed_time);
+
+    private: 
+        // ----- drawing -----
+
+        // t is the timestep for drawing each of the tiles
+        float _t;
+
+        // the time in seconds it takes to draw the entire sequence from 
+        // start to finish
+        float _drawDuration;
 
 };

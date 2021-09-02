@@ -9,6 +9,7 @@
 #include <deque>
 
 #include "DrawHelper.hpp"
+#include "MemoryPattern.hpp"
 
 /*
  * MemoryGameMode is a game mode that implements a single-player game of Pong.
@@ -25,6 +26,7 @@ struct MemoryGameMode : Mode {
 
 	//----- game state -----
 	glm::vec2 court_radius = glm::vec2(7.0f, 5.0f);
+	MemoryPattern pattern;
 
 	// ----- draw -----
 	static_assert(sizeof(Vertex) == 4*3 + 1*4 + 4*2, "MemoryGameMode::Vertex should be packed");
@@ -33,7 +35,6 @@ struct MemoryGameMode : Mode {
 	std::vector< Vertex > vertices;
 
 	// inline helper functions for drawing shapes. The triangles are being counter clockwise.
-
 	void draw_rectangle (glm::vec2 const &center, glm::vec2 const &radius, glm::u8vec4 const &color) {
 		vertices.emplace_back(glm::vec3(center.x-radius.x, center.y-radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
 		vertices.emplace_back(glm::vec3(center.x+radius.x, center.y-radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
