@@ -58,5 +58,9 @@ class MemoryPattern {
         // start to finish
         float _drawDuration;
 
+        glm::u8vec4 top_tile_color = HEX_TO_U8VEC4(0x31afd4);
+        glm::u8vec4 left_tile_color = HEX_TO_U8VEC4(0x004fff);
+        glm::u8vec4 bottom_tile_color = HEX_TO_U8VEC4(0x902d41);
+        glm::u8vec4 right_tile_color = HEX_TO_U8VEC4(0xff007f);
 
 };

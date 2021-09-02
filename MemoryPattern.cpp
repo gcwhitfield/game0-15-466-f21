@@ -19,7 +19,7 @@ MemoryPattern::MemoryPattern(int len)
 
 void MemoryPattern::update(float elapsed_time)
 {
-
+    
 }
 
 void MemoryPattern::beginDrawing()

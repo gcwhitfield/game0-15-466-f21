@@ -3,7 +3,10 @@
 #include "Mode.hpp"
 #include "GL.hpp"
 
+#ifndef GLM
+#define GLM
 #include <glm/glm.hpp>
+#endif
 
 #include <vector>
 #include <deque>
