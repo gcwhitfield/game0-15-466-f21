@@ -1,10 +1,21 @@
 // MemoryPattern.hpp
 // George Whitfield gwhitfie@andrew.cmu.edu
-// August 31, 2021
+// September 2, 2021
 
 #include <vector>
 #include <random>
+#include "DrawHelper.hpp"
 
+// MemoryPattern is a class that stores information about 
+// the current pattern being shown to the player. The game will
+// create a new MemoryPattern at the beginning of each
+// memory sequence, which randomly generates a sequence of 
+// UP, DOWN, LEFT, and RIGHT directions. 
+//
+// ----- drawing -----
+// The MemoryGameMode calls MemoryPattern.update every frame. 
+// MemoryPattern.update 
+// stores information about 
 class MemoryPattern {
 
     public:
@@ -22,16 +33,10 @@ class MemoryPattern {
         std::vector<Direction> pattern;
 
         // randomly generates a new pattern of size 'len'
-        MemoryPattern(int len)
-        {
-            static std::mt19937 rand; 
-            pattern = std::vector<Direction>(len);
-            for (int i = 0; i < len; i++)
-            {
-                // the following line was inspired from enum tutorial on static casting
-                // https://riptutorial.com/cplusplus/example/18751/enum-conversions
-                pattern[i] = static_cast<Direction>(rand() % NUM_DIRECTIONS);
-            }
-        }
+        MemoryPattern(int len);
+        ~MemoryPattern();
+
+        // drawing 
+        
 
 };
