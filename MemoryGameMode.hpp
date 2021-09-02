@@ -7,9 +7,12 @@
 
 #include <vector>
 #include <deque>
-
-#include "DrawHelper.hpp"
 #include "MemoryPattern.hpp"
+
+#ifndef DRAW_HELPER
+#define DRAW_HELPER
+#include "DrawHelper.hpp"
+#endif
 
 /*
  * MemoryGameMode is a game mode that implements a single-player game of Pong.

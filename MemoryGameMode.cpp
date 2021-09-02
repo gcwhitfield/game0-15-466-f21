@@ -9,14 +9,12 @@
 #include <random>
 
 MemoryGameMode::MemoryGameMode() {
-    
-    /*
-	//set up trail as if ball has been here for 'forever':
-	ball_trail.clear();
-	ball_trail.emplace_back(ball, trail_length);
-	ball_trail.emplace_back(ball, 0.0f);
-    */
 	
+	// ----- set up game state -----
+	{
+		pattern = MemoryPattern(10);
+	}
+
 	//----- allocate OpenGL resources -----
 	{ //vertex buffer:
 		glGenBuffers(1, &vertex_buffer);
@@ -116,6 +114,9 @@ MemoryGameMode::~MemoryGameMode() {
 
 	glDeleteTextures(1, &white_tex);
 	white_tex = 0;
+
+	// ----- free game state ----- 
+
 }
 
 bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
@@ -232,7 +233,7 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 	// upload vertices to vertex_buffer:
 	for (auto v = pattern.vertices.begin(); v < pattern.vertices.end(); v++)
 	{
-		vertex_buffer.emplace_back(v);
+		vertices.emplace_back(*v);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer); // set vertex_buffer as current
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STREAM_DRAW); // upload vertices array

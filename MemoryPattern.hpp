@@ -4,7 +4,11 @@
 
 #include <vector>
 #include <random>
+
+#ifndef DRAW_HELPER
+#define DRAW_HELPER
 #include "DrawHelper.hpp"
+#endif
 
 // MemoryPattern is a class that stores information about 
 // the current pattern being shown to the player. The game will
@@ -32,6 +36,7 @@ class MemoryPattern {
         std::vector<Direction> pattern;
 
         // randomly generates a new pattern of size 'len'
+        MemoryPattern() { MemoryPattern(10); };
         MemoryPattern(int len);
         ~MemoryPattern();
 
@@ -42,14 +47,16 @@ class MemoryPattern {
 
         void update(float elapsed_time);
 
-    private: 
         // ----- drawing -----
+        std::vector<Vertex> vertices;
 
+    private: 
         // t is the timestep for drawing each of the tiles
         float _t;
 
         // the time in seconds it takes to draw the entire sequence from 
         // start to finish
         float _drawDuration;
+
 
 };

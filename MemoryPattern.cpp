@@ -8,6 +8,7 @@ MemoryPattern::MemoryPattern(int len)
 {
     static std::mt19937 rand; 
     pattern = std::vector<Direction>(len);
+    vertices = std::vector<Vertex>();
     for (int i = 0; i < len; i++)
     {
         // the following line was inspired from enum tutorial on static casting
