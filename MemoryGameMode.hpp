@@ -40,28 +40,6 @@ struct MemoryGameMode : Mode {
 	//vertices will be accumulated into this list and then uploaded+drawn at the end of the 'draw' function:
 	std::vector< Vertex > vertices;
 
-	// inline helper functions for drawing shapes. The triangles are being counter clockwise.
-	void draw_rectangle (glm::vec2 const &center, glm::vec2 const &radius, glm::u8vec4 const &color) {
-		vertices.emplace_back(glm::vec3(center.x-radius.x, center.y-radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
-		vertices.emplace_back(glm::vec3(center.x+radius.x, center.y-radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
-		vertices.emplace_back(glm::vec3(center.x+radius.x, center.y+radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
-
-		vertices.emplace_back(glm::vec3(center.x-radius.x, center.y-radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
-		vertices.emplace_back(glm::vec3(center.x+radius.x, center.y+radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
-		vertices.emplace_back(glm::vec3(center.x-radius.x, center.y+radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
-	};
-
-    void draw_quadrilateral (glm::vec2 const &top_left, glm::vec2 const &top_right, glm::vec2 const &bot_left, glm::vec2 const &bot_right, glm::u8vec4 const &color) {
-        // the body of this function was copied largely from Professor McCann's start code for 'draw_rectangle's
-		vertices.emplace_back(glm::vec3(top_left.x, top_left.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
-		vertices.emplace_back(glm::vec3(top_right.x, top_right.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
-		vertices.emplace_back(glm::vec3(bot_right.x, bot_right.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
-
-		vertices.emplace_back(glm::vec3(top_left.x, top_left.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
-		vertices.emplace_back(glm::vec3(bot_right.x, bot_right.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
-		vertices.emplace_back(glm::vec3(bot_left.x, bot_left.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
-    };
-
 	//----- opengl assets / helpers ------
 
 	//Shader program that draws transformed, vertices tinted with vertex colors:

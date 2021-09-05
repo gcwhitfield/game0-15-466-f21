@@ -51,16 +51,19 @@ class MemoryPattern {
         std::vector<Vertex> vertices;
 
     private: 
-        // t is the timestep for drawing each of the tiles
+        // t is the timestep for drawing each of the tiles. This variable is 
+        // set by beginDrawing and MemoryPattern.update
         float _t;
 
         // the time in seconds it takes to draw the entire sequence from 
-        // start to finish
+        // start to finish. This variable is set by the beginDrawing method
         float _drawDuration;
 
-        glm::u8vec4 top_tile_color = HEX_TO_U8VEC4(0x31afd4);
-        glm::u8vec4 left_tile_color = HEX_TO_U8VEC4(0x004fff);
-        glm::u8vec4 bottom_tile_color = HEX_TO_U8VEC4(0x902d41);
-        glm::u8vec4 right_tile_color = HEX_TO_U8VEC4(0xff007f);
+        float _timePerTile = 1; // in seconds
+
+        glm::u8vec4 _top_tile_color = HEX_TO_U8VEC4(0x31afd4);
+        glm::u8vec4 _left_tile_color = HEX_TO_U8VEC4(0x004fff);
+        glm::u8vec4 _bottom_tile_color = HEX_TO_U8VEC4(0x902d41);
+        glm::u8vec4 _right_tile_color = HEX_TO_U8VEC4(0xff007f);
 
 };

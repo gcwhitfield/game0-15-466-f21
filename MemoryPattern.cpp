@@ -19,10 +19,23 @@ MemoryPattern::MemoryPattern(int len)
 
 void MemoryPattern::update(float elapsed_time)
 {
+    // step 1) calculate which tile is supposed to be activated
+    // int tile = (unsigned)std::floor(elapsed_time / _timePerTile);
+    // Direction dir = pattern[tile];
+
+    // step 2) left 
     
+    // step 3) top
+
+    // step 4) right
+
+    // step 5) bottom 
+
 }
 
 void MemoryPattern::beginDrawing()
 {
     // 1) calculate the amount of time that is needed to draw the entire pattern
+    _drawDuration = pattern.size() * _timePerTile;
+    _t = 0;
 }
