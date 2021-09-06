@@ -159,6 +159,8 @@ void MemoryGameMode::update(float elapsed) {
 
 void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 
+	vertices.clear();
+
 	//other useful drawing constants:
 	const float wall_radius = 0.05f;
 	// const float shadow_offset = 0.07f;
@@ -167,9 +169,15 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 	// ----- draw the memory patttern -----
 	pattern.draw(drawable_size);
 
+	{ // Add vertex data from MemoryPattern
+		for (auto v = pattern.vertices.begin(); v < pattern.vertices.end(); v++)
+		{
+			vertices.emplace_back(*v);
+		}
+	}
+
 	//---- compute vertices to draw ----
 
-	vertices.clear();
 
 	//solid objects:
 
@@ -224,12 +232,7 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 		glm::vec2(0.0f, 1.0f / scale),
 		glm::vec2(center.x, center.y)
 	);
-
 	// ---- actual drawing ----
-	for (auto v = pattern.vertices.begin(); v < pattern.vertices.end(); v++)
-	{
-		vertices.emplace_back(*v);
-	}
 
 	// clear the color buffer:
 	glClearColor(bg_color.r / 255.0f, bg_color.g / 255.0f, bg_color.b / 255.0f, bg_color.a / 255.0f);

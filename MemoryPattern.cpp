@@ -48,7 +48,7 @@ void MemoryPattern::draw(glm::vec2 const &drawable_size)
     (void)right;
     (void)bottom;
     // left 
-    draw_rectangle(vertices, glm::vec2(300, 300), glm::vec2(50, 50), left);
+    draw_rectangle(vertices, glm::vec2(0.1f, 0.2f), glm::vec2(0.3f, 0.4f), left);
     // top
 
     // right
