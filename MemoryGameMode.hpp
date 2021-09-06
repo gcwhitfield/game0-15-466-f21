@@ -14,7 +14,7 @@
 
 #ifndef DRAW_HELPER
 #define DRAW_HELPER
-#include "DrawHelper.hpp"
+#include "DrawHelper.h"
 #endif
 
 /*

@@ -7,7 +7,7 @@
 
 #ifndef DRAW_HELPER
 #define DRAW_HELPER
-#include "DrawHelper.hpp"
+#include "DrawHelper.h"
 #endif
 
 // MemoryPattern is a class that stores information about 
@@ -65,5 +65,6 @@ class MemoryPattern {
         glm::u8vec4 _left_tile_color = HEX_TO_U8VEC4(0x004fff);
         glm::u8vec4 _bottom_tile_color = HEX_TO_U8VEC4(0x902d41);
         glm::u8vec4 _right_tile_color = HEX_TO_U8VEC4(0xff007f);
+        glm::u8vec4 _deactivated_tile_color = HEX_TO_U8VEC4(0x989898);
 
 };

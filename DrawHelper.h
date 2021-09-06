@@ -25,7 +25,7 @@ const glm::u8vec4 fg_color = HEX_TO_U8VEC4(0xf2d2b6ff);
 
 // inline helper functions for drawing shapes. The triangles are being counter clockwise.
 // draw_rectangle copied from NEST framework
-void draw_rectangle (std::vector<Vertex> &verts, glm::vec2 const &center, glm::vec2 const &radius, glm::u8vec4 const &color) {
+inline void draw_rectangle (std::vector<Vertex> &verts, glm::vec2 const &center, glm::vec2 const &radius, glm::u8vec4 const &color) {
     verts.emplace_back(glm::vec3(center.x-radius.x, center.y-radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
     verts.emplace_back(glm::vec3(center.x+radius.x, center.y-radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
     verts.emplace_back(glm::vec3(center.x+radius.x, center.y+radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
@@ -35,7 +35,7 @@ void draw_rectangle (std::vector<Vertex> &verts, glm::vec2 const &center, glm::v
     verts.emplace_back(glm::vec3(center.x-radius.x, center.y+radius.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
 };
 
-void draw_quadrilateral (std::vector<Vertex> &verts, glm::vec2 const &top_left, glm::vec2 const &top_right, glm::vec2 const &bot_left, glm::vec2 const &bot_right, glm::u8vec4 const &color) {
+inline void draw_quadrilateral (std::vector<Vertex> &verts, glm::vec2 const &top_left, glm::vec2 const &top_right, glm::vec2 const &bot_left, glm::vec2 const &bot_right, glm::u8vec4 const &color) {
     // the body of this function was copied largely from Professor McCann's start code for 'draw_rectangle's
     verts.emplace_back(glm::vec3(top_left.x, top_left.y, 0.0f), color, glm::vec2(0.5f, 0.5f));
     verts.emplace_back(glm::vec3(top_right.x, top_right.y, 0.0f), color, glm::vec2(0.5f, 0.5f));

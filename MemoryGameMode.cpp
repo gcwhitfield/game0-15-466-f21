@@ -150,16 +150,16 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 
 	//---- compute vertices to draw ----
 
-	vertices.clear();
-
+	// vertices.clear();
+	std::cerr << 1 << std::endl;
 
 	//solid objects:
 
 	//walls:
-	draw_rectangle(vertices, glm::vec2(-court_radius.x-wall_radius, 0.0f), glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), fg_color);
-	draw_rectangle(vertices, glm::vec2( court_radius.x+wall_radius, 0.0f), glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), fg_color);
-	draw_rectangle(vertices, glm::vec2( 0.0f,-court_radius.y-wall_radius), glm::vec2(court_radius.x, wall_radius), fg_color);
-	draw_rectangle(vertices, glm::vec2( 0.0f, court_radius.y+wall_radius), glm::vec2(court_radius.x, wall_radius), fg_color);
+	// draw_rectangle(vertices, glm::vec2(-court_radius.x-wall_radius, 0.0f), glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), fg_color);
+	// draw_rectangle(vertices, glm::vec2( court_radius.x+wall_radius, 0.0f), glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), fg_color);
+	// draw_rectangle(vertices, glm::vec2( 0.0f,-court_radius.y-wall_radius), glm::vec2(court_radius.x, wall_radius), fg_color);
+	// draw_rectangle(vertices, glm::vec2( 0.0f, court_radius.y+wall_radius), glm::vec2(court_radius.x, wall_radius), fg_color);
 
 	// draw_rectangle(&vertices, ball, ball_radius, fg_color);
 
@@ -220,8 +220,13 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 	glDisable(GL_DEPTH_TEST);
 
 	// upload vertices to vertex_buffer:
+
+	std::cout << pattern.vertices.size();
+	exit(0);
+
 	for (auto v = pattern.vertices.begin(); v < pattern.vertices.end(); v++)
 	{
+		std::cout << 0 << std::endl;
 		vertices.emplace_back(*v);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer); // set vertex_buffer as current
