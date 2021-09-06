@@ -28,6 +28,7 @@ class MemoryPattern {
 
         enum Direction
         {
+            NONE = -1,
             UP = 0,
             DOWN = 1,
             LEFT = 2,
@@ -63,10 +64,10 @@ class MemoryPattern {
 
         float _timePerTile = 1; // in seconds
 
-        glm::u8vec4 _top_tile_color = HEX_TO_U8VEC4(0x31afd4);
-        glm::u8vec4 _left_tile_color = HEX_TO_U8VEC4(0x004fff);
-        glm::u8vec4 _bottom_tile_color = HEX_TO_U8VEC4(0x902d41);
-        glm::u8vec4 _right_tile_color = HEX_TO_U8VEC4(0xff007f);
-        glm::u8vec4 _deactivated_tile_color = HEX_TO_U8VEC4(0x989898);
+        glm::u8vec4 _top_tile_color = HEX_TO_U8VEC4(0x31afd4ff);
+        glm::u8vec4 _left_tile_color = HEX_TO_U8VEC4(0x004fffff);
+        glm::u8vec4 _bottom_tile_color = HEX_TO_U8VEC4(0x902d41ff);
+        glm::u8vec4 _right_tile_color = HEX_TO_U8VEC4(0xff007fff);
+        glm::u8vec4 _deactivated_tile_color = HEX_TO_U8VEC4(0x989898ff);
 
 };

@@ -24,19 +24,24 @@ MemoryPattern::~MemoryPattern()
 
 void MemoryPattern::update(float elapsed_time)
 {
-    _t += elapsed_time;
-    if (_t > _drawDuration)
-        _t = 0;
+    if (!isDoneDrawing())
+        _t += elapsed_time;
 }
 
+// this function is called from inside of MemoryGameMode.draw(). To draw the
+// memory sequence, you must first call beginDrawing(). If you do not call 
+// beginDrawing() then this function will draw the 4 tiles deactivated.
+// After the sequence has finished drawing, the tiles will be drawn 
+// in deactivated once again
 void MemoryPattern::draw(glm::vec2 const &drawable_size)
 {
     vertices.clear();
-    // step 1) calculate which tile is supposed to be activated
+    // 1) calculate which tile is supposed to be activated
     int tile = (unsigned)std::floor(_t / _timePerTile);
-    Direction dir = pattern[tile];
 
-    // step 2) draw the tiles
+    Direction dir = isDoneDrawing() ? static_cast<Direction>(-1) : pattern[tile];
+
+    // 2) draw the tiles
     glm::u8vec4 top_col    = dir == UP ? _top_tile_color : _deactivated_tile_color;
     glm::u8vec4 left_col   = dir == LEFT ? _left_tile_color : _deactivated_tile_color;
     glm::u8vec4 right_col  = dir == RIGHT ?_right_tile_color : _deactivated_tile_color;
@@ -47,7 +52,6 @@ void MemoryPattern::draw(glm::vec2 const &drawable_size)
     glm::vec2 left_tile_location = glm::vec2(-drawable_size.x / 4.0f, 0);
     glm::vec2 right_tile_location = glm::vec2(drawable_size.x / 4.0f, 0);
 
-    (void)left_col;
     draw_rectangle(vertices, left_tile_location, glm::vec2(0.3f, 0.4f), left_col);
     draw_rectangle(vertices, right_tile_location, glm::vec2(0.3f, 0.4f), right_col);
     draw_rectangle(vertices, top_tile_location, glm::vec2(0.3f, 0.4f), top_col);
