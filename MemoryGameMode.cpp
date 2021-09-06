@@ -167,7 +167,7 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 	const float padding = 0.14f; //padding between outside of walls and edge of window
 
 	// ----- draw the memory patttern -----
-	pattern.draw(drawable_size);
+	pattern.draw(court_radius);
 
 	{ // Add vertex data from MemoryPattern
 		for (auto v = pattern.vertices.begin(); v < pattern.vertices.end(); v++)

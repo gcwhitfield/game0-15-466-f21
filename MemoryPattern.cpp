@@ -25,10 +25,8 @@ MemoryPattern::~MemoryPattern()
 void MemoryPattern::update(float elapsed_time)
 {
     _t += elapsed_time;
-    if (_t > 10)
-    {
-        exit(1);
-    }
+    if (_t > _drawDuration)
+        _t = 0;
 }
 
 void MemoryPattern::draw(glm::vec2 const &drawable_size)
@@ -39,21 +37,23 @@ void MemoryPattern::draw(glm::vec2 const &drawable_size)
     Direction dir = pattern[tile];
 
     // step 2) draw the tiles
-    glm::u8vec4 top    = dir == UP ? _top_tile_color : _deactivated_tile_color;
-    glm::u8vec4 left   = dir == LEFT ? _left_tile_color : _deactivated_tile_color;
-    glm::u8vec4 right  = dir == RIGHT ?_right_tile_color : _deactivated_tile_color;
-    glm::u8vec4 bottom = dir == DOWN ? _bottom_tile_color : _deactivated_tile_color;
-    (void)top;
-    (void)left;
-    (void)right;
-    (void)bottom;
-    // left 
-    draw_rectangle(vertices, glm::vec2(0.1f, 0.2f), glm::vec2(0.3f, 0.4f), left);
-    // top
+    glm::u8vec4 top_col    = dir == UP ? _top_tile_color : _deactivated_tile_color;
+    glm::u8vec4 left_col   = dir == LEFT ? _left_tile_color : _deactivated_tile_color;
+    glm::u8vec4 right_col  = dir == RIGHT ?_right_tile_color : _deactivated_tile_color;
+    glm::u8vec4 bottom_col = dir == DOWN ? _bottom_tile_color : _deactivated_tile_color;
 
-    // right
+    glm::vec2 top_tile_location = glm::vec2(0, drawable_size.y / 4.0f);
+    glm::vec2 bottom_tile_location = glm::vec2(0, -drawable_size.y / 4.0f);
+    glm::vec2 left_tile_location = glm::vec2(-drawable_size.x / 4.0f, 0);
+    glm::vec2 right_tile_location = glm::vec2(drawable_size.x / 4.0f, 0);
 
-    // bottom 
+    (void)left_col;
+    draw_rectangle(vertices, left_tile_location, glm::vec2(0.3f, 0.4f), left_col);
+    draw_rectangle(vertices, right_tile_location, glm::vec2(0.3f, 0.4f), right_col);
+    draw_rectangle(vertices, top_tile_location, glm::vec2(0.3f, 0.4f), top_col);
+    draw_rectangle(vertices, bottom_tile_location, glm::vec2(0.3f, 0.4f), bottom_col);
+
+
 }
 
 void MemoryPattern::beginDrawing()
