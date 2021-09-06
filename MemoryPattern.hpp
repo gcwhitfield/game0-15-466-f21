@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <random>
+#include <iostream>
 
 #ifndef DRAW_HELPER
 #define DRAW_HELPER
@@ -46,6 +47,7 @@ class MemoryPattern {
         void beginDrawing();
 
         void update(float elapsed_time);
+        void draw (glm::vec2 const &drawable_size);
 
         // ----- drawing -----
         std::vector<Vertex> vertices;

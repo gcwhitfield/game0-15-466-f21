@@ -10,6 +10,10 @@
 
 MemoryGameMode::MemoryGameMode() {
 	
+	{ // set up the game mode
+		_START_CALLED = false;
+	}
+
 	// ----- set up game state -----
 	{
 		pattern = MemoryPattern(10);
@@ -135,7 +139,19 @@ bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window
 	return false;
 }
 
+void MemoryGameMode::start()
+{
+	pattern.beginDrawing();
+}
+
 void MemoryGameMode::update(float elapsed) {
+
+
+	if (!_START_CALLED)
+	{
+		start();
+		_START_CALLED = true;
+	}
 
 	static std::mt19937 mt; //mersenne twister pseudo-random number generator
 	pattern.update(elapsed);
@@ -148,18 +164,20 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 	// const float shadow_offset = 0.07f;
 	const float padding = 0.14f; //padding between outside of walls and edge of window
 
+	// ----- draw the memory patttern -----
+	pattern.draw(drawable_size);
+
 	//---- compute vertices to draw ----
 
-	// vertices.clear();
-	std::cerr << 1 << std::endl;
+	vertices.clear();
 
 	//solid objects:
 
-	//walls:
-	// draw_rectangle(vertices, glm::vec2(-court_radius.x-wall_radius, 0.0f), glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), fg_color);
-	// draw_rectangle(vertices, glm::vec2( court_radius.x+wall_radius, 0.0f), glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), fg_color);
-	// draw_rectangle(vertices, glm::vec2( 0.0f,-court_radius.y-wall_radius), glm::vec2(court_radius.x, wall_radius), fg_color);
-	// draw_rectangle(vertices, glm::vec2( 0.0f, court_radius.y+wall_radius), glm::vec2(court_radius.x, wall_radius), fg_color);
+	// walls:
+	draw_rectangle(vertices, glm::vec2(-court_radius.x-wall_radius, 0.0f), glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), fg_color);
+	draw_rectangle(vertices, glm::vec2( court_radius.x+wall_radius, 0.0f), glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), fg_color);
+	draw_rectangle(vertices, glm::vec2( 0.0f,-court_radius.y-wall_radius), glm::vec2(court_radius.x, wall_radius), fg_color);
+	draw_rectangle(vertices, glm::vec2( 0.0f, court_radius.y+wall_radius), glm::vec2(court_radius.x, wall_radius), fg_color);
 
 	// draw_rectangle(&vertices, ball, ball_radius, fg_color);
 
@@ -208,6 +226,10 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 	);
 
 	// ---- actual drawing ----
+	for (auto v = pattern.vertices.begin(); v < pattern.vertices.end(); v++)
+	{
+		vertices.emplace_back(*v);
+	}
 
 	// clear the color buffer:
 	glClearColor(bg_color.r / 255.0f, bg_color.g / 255.0f, bg_color.b / 255.0f, bg_color.a / 255.0f);
@@ -220,15 +242,6 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 	glDisable(GL_DEPTH_TEST);
 
 	// upload vertices to vertex_buffer:
-
-	std::cout << pattern.vertices.size();
-	exit(0);
-
-	for (auto v = pattern.vertices.begin(); v < pattern.vertices.end(); v++)
-	{
-		std::cout << 0 << std::endl;
-		vertices.emplace_back(*v);
-	}
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer); // set vertex_buffer as current
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STREAM_DRAW); // upload vertices array
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

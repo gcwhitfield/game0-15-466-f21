@@ -13,6 +13,9 @@ struct Mode : std::enable_shared_from_this< Mode > {
 	//The function should return 'true' if it handled the event.
 	virtual bool handle_event(SDL_Event const &, glm::uvec2 const &window_size) { return false; }
 
+	// 'start' is called right before the first call to update
+	virtual void start() { }
+
 	//update is called at the start of a new frame, after events are handled:
 	// 'elapsed' is time in seconds since the last call to 'update'
 	virtual void update(float elapsed) { }

@@ -27,6 +27,7 @@ struct MemoryGameMode : Mode {
 
 	//functions called by main loop:
 	virtual bool handle_event(SDL_Event const &, glm::uvec2 const &window_size) override;
+	virtual void start() override;
 	virtual void update(float elapsed) override;
 	virtual void draw(glm::uvec2 const &drawable_size) override;
 
@@ -59,4 +60,5 @@ struct MemoryGameMode : Mode {
 	// computed in draw() as the inverse of OBJECT_TO_CLIP
 	// (stored here so that the mouse handling code can use it to position the paddle)
 
+	bool _START_CALLED; // set to true once start has been called
 };
