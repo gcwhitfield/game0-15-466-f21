@@ -140,14 +140,17 @@ bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window
 			break;
 		case PATTERN_RECALL:
 			{
-				auto check_input = [this](MemoryPattern::Direction d)
+				auto check_input = [this](MemoryPattern::Direction given_dir)
 				{
-					std::cout << "Given Input : " << d<< " Expected Input : " << pattern.pattern[recall_tile_index] << std::endl;
-					if (pattern.pattern[recall_tile_index] != d)
+					MemoryPattern::Direction correct_dir = pattern.pattern[recall_tile_index];
+					std::cout << "Given Input : " << given_dir<< " Expected Input : " <<correct_dir << std::endl;
+					if (correct_dir != given_dir)
 					{
 						std::cout << "incorrect :(" << std::endl;
-						next_state = PATTERN_RECALL;
 						difficulty = 1;
+						pattern = MemoryPattern(difficulty);
+						pattern.begin_drawing();
+						next_state = PATTERN_DELIVERY;
 					} else {
 						if (recall_tile_index >= pattern.pattern.size() - 1)
 						{ // correct input, transition to next stage 
@@ -164,21 +167,20 @@ bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window
 					
 					return;
 				};
-				MemoryPattern::Direction dir = pattern.pattern[recall_tile_index];
 				if (evt.key.type == SDL_KEYDOWN)
 				{
 					if (evt.key.keysym.sym == SDLK_UP || evt.key.keysym.sym == SDLK_w)
 					{
-						check_input(dir);
+						check_input(MemoryPattern::UP);
 					} else if (evt.key.keysym.sym == SDLK_DOWN || evt.key.keysym.sym == SDLK_s)
 					{
-						check_input(dir);
+						check_input(MemoryPattern::DOWN);
 					} else if (evt.key.keysym.sym == SDLK_LEFT || evt.key.keysym.sym == SDLK_a)
 					{
-						check_input(dir);
+						check_input(MemoryPattern::LEFT);
 					} else if (evt.key.keysym.sym == SDLK_RIGHT || evt.key.keysym.sym == SDLK_d)
 					{
-						check_input(dir);
+						check_input(MemoryPattern::RIGHT);
 					}
 				}
 			}
@@ -231,6 +233,7 @@ void MemoryGameMode::update(float elapsed) {
 			break;
 	}
 
+	curr_state = next_state;
 	static std::mt19937 mt; //mersenne twister pseudo-random number generator
 	//std::cout << curr_state << std::endl; 
 }
@@ -266,7 +269,6 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 			break;
 	}
 
-	curr_state = next_state;
 	// walls:
 	draw_rectangle(vertices, glm::vec2(-court_radius.x-wall_radius, 0.0f), glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), fg_color);
 	draw_rectangle(vertices, glm::vec2( court_radius.x+wall_radius, 0.0f), glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), fg_color);
