@@ -32,8 +32,8 @@ void MemoryPattern::update(float elapsed_time)
 }
 
 // this function is called from inside of MemoryGameMode.draw(). To draw the
-// memory sequence, you must first call beginDrawing(). If you do not call 
-// beginDrawing() then this function will draw the 4 tiles deactivated.
+// memory sequence, you must first call begin_drawing(). If you do not call 
+// begin_drawing() then this function will draw the 4 tiles deactivated.
 // After the sequence has finished drawing, the tiles will be drawn 
 // in deactivated once again
 void MemoryPattern::draw(glm::vec2 const &drawable_size)
@@ -63,7 +63,7 @@ void MemoryPattern::draw(glm::vec2 const &drawable_size)
 
 }
 
-void MemoryPattern::beginDrawing()
+void MemoryPattern::begin_drawing()
 {
     _t = 0.01f;
 }

@@ -132,7 +132,7 @@ bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window
 		case INIT:
 			if (evt.key.keysym.sym == SDLK_SPACE)
 			{
-				pattern.beginDrawing();
+				pattern.begin_drawing();
 				next_state = PATTERN_DELIVERY;
 			}
 			break;
@@ -150,9 +150,12 @@ bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window
 						difficulty = 1;
 					} else {
 						if (recall_tile_index >= pattern.pattern.size() - 1)
-						{
+						{ // correct input, transition to next stage 
 							std::cout << "correct!!" << std::endl;
 							next_state = PATTERN_DELIVERY;
+							difficulty ++;
+							pattern = MemoryPattern(difficulty);
+							pattern.begin_drawing();
 						} else {
 							recall_tile_index ++;
 						}
@@ -178,7 +181,6 @@ bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window
 						check_input(dir);
 					}
 				}
-
 			}
 			break;
 		case FINISH:

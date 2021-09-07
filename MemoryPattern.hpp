@@ -45,7 +45,7 @@ class MemoryPattern {
         bool isDoneDrawing() { return _t > _drawDuration; };
         bool isDrawing() { return _t > 0.0f && _t < _drawDuration; };
         
-        void beginDrawing();
+        void begin_drawing();
 
         void update(float elapsed_time);
         void draw (glm::vec2 const &drawable_size);
@@ -55,11 +55,11 @@ class MemoryPattern {
 
     private: 
         // t is the timestep for drawing each of the tiles. This variable is 
-        // set by beginDrawing and MemoryPattern.update
+        // set by begin_drawing and MemoryPattern.update
         float _t;
 
         // the time in seconds it takes to draw the entire sequence from 
-        // start to finish. This variable is set by the beginDrawing method
+        // start to finish. This variable is set by the begin_drawing method
         float _drawDuration;
 
         float _timePerTile = 1.0f; // in seconds
