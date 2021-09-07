@@ -68,6 +68,6 @@ class MemoryPattern {
         glm::u8vec4 _left_tile_color = HEX_TO_U8VEC4(0x004fffff);
         glm::u8vec4 _bottom_tile_color = HEX_TO_U8VEC4(0x902d41ff);
         glm::u8vec4 _right_tile_color = HEX_TO_U8VEC4(0xff007fff);
-        glm::u8vec4 _deactivated_tile_color = HEX_TO_U8VEC4(0x989898ff);
+        glm::u8vec4 _deactivated_tile_color = HEX_TO_U8VEC4(0x797979ff);
 
 };

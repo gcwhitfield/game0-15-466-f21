@@ -1,17 +1,31 @@
-# (TODO: your game's title)
+# The Ultimate Memory Challenge
 
-Author: (TODO: your name)
+Author: George Whitfield
 
-Design: (TODO: In two sentences or fewer, describe what is new and interesting about your game.)
+Design: View a pattern on the screen and repeat it back. The better you do, 
+the harder it gets.
 
 Screen Shot:
 
-![Screen Shot](screenshot.png)
+![Screen Shot](screenshots/screenshot2.png)
 
-How To Play:
+### How To Play:
 
-(TODO: describe the controls and (if needed) goals/strategy.)
+Controls: WASD, Arrow Keys
 
-Sources: (TODO: list a source URL for any assets you did not create yourself. Make sure you have a license for the asset.)
+The Ultimate Memory Challenge has 2 phases: DELIVERY and RECALL. 
+
+When the game is first loaded you will see a blue plus sign. To begin, press 
+the spacebar.
+
+![Screen Shot](screenshots/screenshot1.png)
+
+In the DELIVERY phase, the player is presented with 4 boxes, each corresponding to a different 
+direction, i.e. up down left right. The boxes will light up in a sequence. The player must 
+memorize the sequence during the DELIVERY phase. 
+
+In the RECALL phase, the player no longer sees the boxes. They must press WASD or the 
+arrow keys to correctly recall the sequence that they saw during the DELIVERY phase.
+
 
 This game was built with [NEST](NEST.md).

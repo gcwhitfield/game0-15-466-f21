@@ -21,97 +21,97 @@ MemoryGameMode::MemoryGameMode() {
 	next_state = INIT;
 	
 
-	//----- allocate OpenGL resources -----
-	{ //vertex buffer:
+	// ----- allocate OpenGL resources -----
+	{ // vertex buffer:
 		glGenBuffers(1, &vertex_buffer);
-		//for now, buffer will be un-filled.
+		// for now, buffer will be un-filled.
 
-		GL_ERRORS(); //PARANOIA: print out any OpenGL errors that may have happened
+		GL_ERRORS(); // PARANOIA: print out any OpenGL errors that may have happened
 	}
 
-	{ //vertex array mapping buffer for color_texture_program:
-		//ask OpenGL to fill vertex_buffer_for_color_texture_program with the name of an unused vertex array object:
+	{ // vertex array mapping buffer for color_texture_program:
+		// ask OpenGL to fill vertex_buffer_for_color_texture_program with the name of an unused vertex array object:
 		glGenVertexArrays(1, &vertex_buffer_for_color_texture_program);
 
-		//set vertex_buffer_for_color_texture_program as the current vertex array object:
+		// set vertex_buffer_for_color_texture_program as the current vertex array object:
 		glBindVertexArray(vertex_buffer_for_color_texture_program);
 
-		//set vertex_buffer as the source of glVertexAttribPointer() commands:
+		// set vertex_buffer as the source of glVertexAttribPointer() commands:
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 
-		//set up the vertex array object to describe arrays of MemoryGameMode::Vertex:
+		// set up the vertex array object to describe arrays of MemoryGameMode::Vertex:
 		glVertexAttribPointer(
-			color_texture_program.Position_vec4, //attribute
-			3, //size
-			GL_FLOAT, //type
-			GL_FALSE, //normalized
-			sizeof(Vertex), //stride
-			(GLbyte *)0 + 0 //offset
+			color_texture_program.Position_vec4, // attribute
+			3, // size
+			GL_FLOAT, // type
+			GL_FALSE, // normalized
+			sizeof(Vertex), // stride
+			(GLbyte *)0 + 0 // offset
 		);
 		glEnableVertexAttribArray(color_texture_program.Position_vec4);
-		//[Note that it is okay to bind a vec3 input to a vec4 attribute -- the w component will be filled with 1.0 automatically]
+		// [Note that it is okay to bind a vec3 input to a vec4 attribute -- the w component will be filled with 1.0 automatically]
 
 		glVertexAttribPointer(
-			color_texture_program.Color_vec4, //attribute
-			4, //size
-			GL_UNSIGNED_BYTE, //type
-			GL_TRUE, //normalized
-			sizeof(Vertex), //stride
-			(GLbyte *)0 + 4*3 //offset
+			color_texture_program.Color_vec4, // attribute
+			4, // size
+			GL_UNSIGNED_BYTE, // type
+			GL_TRUE, // normalized
+			sizeof(Vertex), // stride
+			(GLbyte *)0 + 4*3 // offset
 		);
 		glEnableVertexAttribArray(color_texture_program.Color_vec4);
 
 		glVertexAttribPointer(
-			color_texture_program.TexCoord_vec2, //attribute
-			2, //size
-			GL_FLOAT, //type
-			GL_FALSE, //normalized
-			sizeof(Vertex), //stride
-			(GLbyte *)0 + 4*3 + 4*1 //offset
+			color_texture_program.TexCoord_vec2, // attribute
+			2, // size
+			GL_FLOAT, // type
+			GL_FALSE, // normalized
+			sizeof(Vertex), // stride
+			(GLbyte *)0 + 4*3 + 4*1 // offset
 		);
 		glEnableVertexAttribArray(color_texture_program.TexCoord_vec2);
 
-		//done referring to vertex_buffer, so unbind it:
+		// done referring to vertex_buffer, so unbind it:
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		//done setting up vertex array object, so unbind it:
+		// done setting up vertex array object, so unbind it:
 		glBindVertexArray(0);
 
-		GL_ERRORS(); //PARANOIA: print out any OpenGL errors that may have happened
+		GL_ERRORS(); // PARANOIA: print out any OpenGL errors that may have happened
 	}
 
-	{ //solid white texture:
-		//ask OpenGL to fill white_tex with the name of an unused texture object:
+	{ // solid white texture:
+		// ask OpenGL to fill white_tex with the name of an unused texture object:
 		glGenTextures(1, &white_tex);
 
-		//bind that texture object as a GL_TEXTURE_2D-type texture:
+		// bind that texture object as a GL_TEXTURE_2D-type texture:
 		glBindTexture(GL_TEXTURE_2D, white_tex);
 
-		//upload a 1x1 image of solid white to the texture:
+		// upload a 1x1 image of solid white to the texture:
 		glm::uvec2 size = glm::uvec2(1,1);
 		std::vector< glm::u8vec4 > data(size.x*size.y, glm::u8vec4(0xff, 0xff, 0xff, 0xff));
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
 
-		//set filtering and wrapping parameters:
-		//(it's a bit silly to mipmap a 1x1 texture, but I'm doing it because you may want to use this code to load different sizes of texture)
+		// set filtering and wrapping parameters:
+		// (it's a bit silly to mipmap a 1x1 texture, but I'm doing it because you may want to use this code to load different sizes of texture)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-		//since texture uses a mipmap and we haven't uploaded one, instruct opengl to make one for us:
+		// since texture uses a mipmap and we haven't uploaded one, instruct opengl to make one for us:
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		//Okay, texture uploaded, can unbind it:
+		// Okay, texture uploaded, can unbind it:
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-		GL_ERRORS(); //PARANOIA: print out any OpenGL errors that may have happened
+		GL_ERRORS(); // PARANOIA: print out any OpenGL errors that may have happened
 	}
 }
 
 MemoryGameMode::~MemoryGameMode() {
 
-	//----- free OpenGL resources -----
+	// ----- free OpenGL resources -----
 	glDeleteBuffers(1, &vertex_buffer);
 	vertex_buffer = 0;
 
@@ -143,10 +143,8 @@ bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window
 				auto check_input = [this](MemoryPattern::Direction given_dir)
 				{
 					MemoryPattern::Direction correct_dir = pattern.pattern[recall_tile_index];
-					std::cout << "Given Input : " << given_dir<< " Expected Input : " <<correct_dir << std::endl;
 					if (correct_dir != given_dir)
 					{
-						std::cout << "incorrect :(" << std::endl;
 						difficulty = 1;
 						pattern = MemoryPattern(difficulty);
 						pattern.begin_drawing();
@@ -154,7 +152,6 @@ bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window
 					} else {
 						if (recall_tile_index >= pattern.pattern.size() - 1)
 						{ // correct input, transition to next stage 
-							std::cout << "correct!!" << std::endl;
 							next_state = PATTERN_DELIVERY;
 							difficulty ++;
 							pattern = MemoryPattern(difficulty);
@@ -218,7 +215,6 @@ void MemoryGameMode::update(float elapsed) {
 		case PATTERN_DELIVERY:
 			if (pattern.isDoneDrawing())
 			{
-				std::cout << "is done drawing" << std::endl;
 				next_state = PATTERN_RECALL;
 				recall_tile_index = 0;
 			} else {
@@ -234,19 +230,16 @@ void MemoryGameMode::update(float elapsed) {
 	}
 
 	curr_state = next_state;
-	static std::mt19937 mt; //mersenne twister pseudo-random number generator
-	//std::cout << curr_state << std::endl; 
+	static std::mt19937 mt; // mersenne twister pseudo-random number generator
 }
 
 void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 
 	vertices.clear();
 
-	//other useful drawing constants:
+	// other useful drawing constants:
 	const float wall_radius = 0.05f;
-	// const float shadow_offset = 0.07f;
 	const float padding = 0.14f; //padding between outside of walls and edge of window
-
 
 	// ----- draw items based on the current game state -----
 	switch (curr_state)
@@ -275,14 +268,12 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 	draw_rectangle(vertices, glm::vec2( 0.0f,-court_radius.y-wall_radius), glm::vec2(court_radius.x, wall_radius), fg_color);
 	draw_rectangle(vertices, glm::vec2( 0.0f, court_radius.y+wall_radius), glm::vec2(court_radius.x, wall_radius), fg_color);
 
-	// draw_rectangle(&vertices, ball, ball_radius, fg_color);
-
-	//scores:
+	// scores:
 	glm::vec2 score_radius = glm::vec2(0.1f, 0.1f);
 
-	//------ compute court-to-window transform ------
+	// ------ compute court-to-window transform ------
 
-	//compute area that should be visible:
+	// compute area that should be visible:
 	glm::vec2 scene_min = glm::vec2(
 		-court_radius.x - 2.0f * wall_radius - padding,
 		-court_radius.y - 2.0f * wall_radius - padding
@@ -292,11 +283,11 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 		court_radius.y + 2.0f * wall_radius + 3.0f * score_radius.y + padding
 	);
 
-	//compute window aspect ratio:
+	// compute window aspect ratio:
 	float aspect = drawable_size.x / float(drawable_size.y);
-	//we'll scale the x coordinate by 1.0 / aspect to make sure things stay square.
+	// we'll scale the x coordinate by 1.0 / aspect to make sure things stay square.
 
-	//compute scale factor for court given that...
+	// compute scale factor for court given that...
 	float scale = std::min(
 		(2.0f * aspect) / (scene_max.x - scene_min.x), //... x must fit in [-aspect,aspect] ...
 		(2.0f) / (scene_max.y - scene_min.y) //... y must fit in [-1,1].
@@ -304,17 +295,17 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 
 	glm::vec2 center = 0.5f * (scene_max + scene_min);
 
-	//build matrix that scales and translates appropriately:
+	// build matrix that scales and translates appropriately:
 	glm::mat4 court_to_clip = glm::mat4(
 		glm::vec4(scale / aspect, 0.0f, 0.0f, 0.0f),
 		glm::vec4(0.0f, scale, 0.0f, 0.0f),
 		glm::vec4(0.0f, 0.0f, 1.0f, 0.0f),
 		glm::vec4(-center.x * (scale / aspect), -center.y * scale, 0.0f, 1.0f)
 	);
-	//NOTE: glm matrices are specified in *Column-Major* order,
+	// NOTE: glm matrices are specified in *Column-Major* order,
 	// so each line above is specifying a *column* of the matrix(!)
 
-	//also build the matrix that takes clip coordinates to court coordinates (used for mouse handling):
+	// also build the matrix that takes clip coordinates to court coordinates (used for mouse handling):
 	clip_to_court = glm::mat3x2(
 		glm::vec2(aspect / scale, 0.0f),
 		glm::vec2(0.0f, 1.0f / scale),
@@ -370,9 +361,9 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 void MemoryGameMode::draw_init()
 {
 	// draw a blue plus-sign on the screen
-	glm::u8vec4 blue = HEX_TO_U8VEC4(0x00ffffff);
-	draw_rectangle(vertices, glm::vec2(0, 0), glm::vec2(court_radius.x / 16, court_radius.y / 2), blue);
-	draw_rectangle(vertices, glm::vec2(0, 0), glm::vec2(court_radius.x / 2, court_radius.x / 16), blue);
+	// glm::u8vec4 blue = HEX_TO_U8VEC4(0x4cc9f0ff);
+	draw_rectangle(vertices, glm::vec2(0, 0), glm::vec2(court_radius.x / 16, court_radius.y / 2), fg_color);
+	draw_rectangle(vertices, glm::vec2(0, 0), glm::vec2(court_radius.x / 2, court_radius.x / 16), fg_color);
 }
 
 void MemoryGameMode::draw_pattern_delivery()

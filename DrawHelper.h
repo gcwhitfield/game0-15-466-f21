@@ -20,8 +20,8 @@ struct Vertex {
 // HEX_TO_U8VEC4 was copied from the NEST framework
 // some nice colors from the course web page:
 #define HEX_TO_U8VEC4( HX ) (glm::u8vec4( (HX >> 24) & 0xff, (HX >> 16) & 0xff, (HX >> 8) & 0xff, (HX) & 0xff ))
-const glm::u8vec4 bg_color = HEX_TO_U8VEC4(0x193b59ff);
-const glm::u8vec4 fg_color = HEX_TO_U8VEC4(0xf2d2b6ff);
+const glm::u8vec4 bg_color = HEX_TO_U8VEC4(0x000000ff);
+const glm::u8vec4 fg_color = HEX_TO_U8VEC4(0x4361eeff);
 
 // inline helper functions for drawing shapes. The triangles are being counter clockwise.
 // draw_rectangle copied from NEST framework
