@@ -18,7 +18,7 @@
 #endif
 
 /*
- * MemoryGameMode is a game mode that implements a single-player game of Pong.
+ * MemoryGameMode is a game mode that implements a simple memory game.
  */
 
 struct MemoryGameMode : Mode {

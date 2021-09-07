@@ -8,6 +8,22 @@
 
 #include <random>
 
+// The MemoryGameMode operates like a Finite State Machine (FSM). The game has 
+// different states and the MemoryGameMode decides what to do based on curr_state.
+// The states are:
+//     INIT - displays the blue plus sign
+//     PATTERN_DELIVERY - shows the player a pattern to memorize
+//     PATTERN_RECALL - shows nothing, the player must correctly recall pattern
+//     FINISH - final state for 'you win' screen. At the moment, the game never
+//            enters into this state and instead the pattern gets harder forever
+//
+// Notice how the handle_input, update, and draw functions all case on curr_state.
+// If the player presses the spacebar in the INIT state, then the game will 
+// transition to the first PATTERN_DELIVERY state with difficulty = 1. After 
+// the pattern is shown in the PATTERN_DELIVERY state, the game automatically
+// transitions into PATTERN_RECALL. From PATTERN_RECALL, the game will 
+// always transition back into PATTERN_DELIVERY, with the caveat that if the player
+// makes a mistake in the recall then the difficulty gets reset back to 1.
 MemoryGameMode::MemoryGameMode() {
 	
 	{ // set up the game mode
@@ -20,7 +36,6 @@ MemoryGameMode::MemoryGameMode() {
 	curr_state = INIT;
 	next_state = INIT;
 	
-
 	// ----- allocate OpenGL resources -----
 	{ // vertex buffer:
 		glGenBuffers(1, &vertex_buffer);
@@ -121,12 +136,10 @@ MemoryGameMode::~MemoryGameMode() {
 	glDeleteTextures(1, &white_tex);
 	white_tex = 0;
 
-	// ----- free game state ----- 
-
 }
 
 bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
-
+	// handle different types of input for each of the different states
 	switch (curr_state)
 	{
 		case INIT:
@@ -191,6 +204,7 @@ bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window
 	return false;
 }
 
+// start is called right before the first call to update is executed
 void MemoryGameMode::start()
 {
 	curr_state = INIT;
@@ -198,14 +212,13 @@ void MemoryGameMode::start()
 
 void MemoryGameMode::update(float elapsed) {
 
-
 	if (!_START_CALLED)
 	{
 		start();
 		_START_CALLED = true;
 	}
 
-	// next state logic
+	// ----- next state logic -----
 	switch (curr_state)
 	{
 		case INIT:
@@ -230,11 +243,13 @@ void MemoryGameMode::update(float elapsed) {
 	}
 
 	curr_state = next_state;
-	static std::mt19937 mt; // mersenne twister pseudo-random number generator
 }
 
 void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 
+	// verices must be cleared every time the screen is drawn. Otherwise, the 
+	// the previous frame will be drawn below the curretn frame, which causes 
+	// smeary artifacts
 	vertices.clear();
 
 	// other useful drawing constants:
@@ -311,8 +326,8 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 		glm::vec2(0.0f, 1.0f / scale),
 		glm::vec2(center.x, center.y)
 	);
-	// ---- actual drawing ----
 
+	// ---- actual drawing ----
 	// clear the color buffer:
 	glClearColor(bg_color.r / 255.0f, bg_color.g / 255.0f, bg_color.b / 255.0f, bg_color.a / 255.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -353,9 +368,7 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 	// reset current program to none:
 	glUseProgram(0);
 	
-
 	GL_ERRORS(); // PARANOIA: print errors just in case we did something wrong.
-
 }
 
 void MemoryGameMode::draw_init()
@@ -380,10 +393,16 @@ void MemoryGameMode::draw_pattern_delivery()
 
 void MemoryGameMode::draw_pattern_recall()
 {
-	
+	// for now, draw nothing on the screen
+
+	// TODO: add visual feedback for player input
 }
 
 void MemoryGameMode::draw_finish()
 {
-	// draw a green plus-sign on the screen
+	// right now the game never enters the FINISH state so 
+	// this function never gets called.
+	
+	// TODO: add a maximum level and display the FINISH screen if the player 
+	// makes it to, say, level 10
 }

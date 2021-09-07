@@ -40,7 +40,7 @@ class MemoryPattern {
         // randomly generates a new pattern of size 'len'
         MemoryPattern() { MemoryPattern(10); };
         MemoryPattern(int len);
-        ~MemoryPattern();
+        ~MemoryPattern() {};
 
         bool isDoneDrawing() { return _t > _drawDuration; };
         bool isDrawing() { return _t > 0.0f && _t < _drawDuration; };

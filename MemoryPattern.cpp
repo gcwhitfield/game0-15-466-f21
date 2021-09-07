@@ -8,7 +8,6 @@ MemoryPattern::MemoryPattern(int len)
 {
     static std::mt19937 rand; 
     pattern = std::vector<Direction>(len);
-    // vertices = std::vector<Vertex>();
     for (int i = 0; i < len; i++)
     {
         // the following line was inspired from enum tutorial on static casting
@@ -19,18 +18,13 @@ MemoryPattern::MemoryPattern(int len)
     _drawDuration = pattern.size() * _timePerTile;
 }
 
-MemoryPattern::~MemoryPattern()
-{
-
-}
-
 void MemoryPattern::update(float elapsed_time)
 {
     if (!isDoneDrawing() && isDrawing())
         _t += elapsed_time;
 }
 
-// this function is called from inside of MemoryGameMode.draw(). To draw the
+// This function is called from inside of MemoryGameMode.draw(). To draw the
 // memory sequence, you must first call begin_drawing(). If you do not call 
 // begin_drawing() then this function will draw the 4 tiles deactivated.
 // After the sequence has finished drawing, the tiles will be drawn 
@@ -58,8 +52,6 @@ void MemoryPattern::draw(glm::vec2 const &drawable_size)
     draw_rectangle(vertices, right_tile_location, glm::vec2(0.3f, 0.4f), right_col);
     draw_rectangle(vertices, top_tile_location, glm::vec2(0.3f, 0.4f), top_col);
     draw_rectangle(vertices, bottom_tile_location, glm::vec2(0.3f, 0.4f), bottom_col);
-
-
 }
 
 void MemoryPattern::begin_drawing()
