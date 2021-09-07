@@ -34,8 +34,31 @@ struct MemoryGameMode : Mode {
 	//----- game state -----
 	glm::vec2 court_radius = glm::vec2(7.0f, 5.0f);
 	MemoryPattern pattern;
+	int difficulty; // the number of tiles to memorize per pattern
+
+	// this variable is used in the PATTERN_RECALL state. It is the index into 
+	// the std::vector<Direction> 'pattern.pattern' that corresponds to the 
+	// correct direction that the player must press
+	int recall_tile_index = 0; 
+
+	enum GameState
+	{
+		NONE = -1,
+		INIT = 0, 
+		PATTERN_DELIVERY = 1,
+		PATTERN_RECALL = 2,
+		FINISH = 3
+	};
+
+	GameState curr_state;
+	GameState next_state;
 
 	// ----- draw -----
+	void draw_init();
+	void draw_pattern_delivery();
+	void draw_pattern_recall();
+	void draw_finish();
+
 	static_assert(sizeof(Vertex) == 4*3 + 1*4 + 4*2, "MemoryGameMode::Vertex should be packed");
 
 	//vertices will be accumulated into this list and then uploaded+drawn at the end of the 'draw' function:

@@ -15,8 +15,11 @@ MemoryGameMode::MemoryGameMode() {
 	}
 
 	// ----- set up game state -----
+	pattern = MemoryPattern(difficulty);
 	{
-		pattern = MemoryPattern(10);
+		curr_state = INIT;
+		next_state = INIT;
+		difficulty = 1;
 	}
 
 	//----- allocate OpenGL resources -----
@@ -125,15 +128,58 @@ MemoryGameMode::~MemoryGameMode() {
 
 bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
 
-	if (evt.type == SDL_MOUSEMOTION) {
-		//convert mouse from window pixels (top-left origin, +y is down) to clip space ([-1,1]x[-1,1], +y is up):
-		/*
-        glm::vec2 clip_mouse = glm::vec2(
-			(evt.motion.x + 0.5f) / window_size.x * 2.0f - 1.0f,
-			(evt.motion.y + 0.5f) / window_size.y *-2.0f + 1.0f
-		);
-		 //left_paddle.y = (clip_to_court * glm::vec3(clip_mouse, 1.0f)).y;
-         */
+	switch (curr_state)
+	{
+		case INIT:
+			if (evt.key.keysym.sym == SDLK_SPACE)
+			{
+				pattern.beginDrawing();
+				next_state = PATTERN_DELIVERY;
+			}
+			break;
+		case PATTERN_DELIVERY:
+			break;
+		case PATTERN_RECALL:
+			{
+				auto check_input = [this](MemoryPattern::Direction d)
+				{
+					if (pattern.pattern[recall_tile_index] != d)
+					{
+						std::cout << "incorrect :(" << std::endl;
+						next_state = PATTERN_RECALL;
+						difficulty = 1;
+					} else if (recall_tile_index >= pattern.pattern.size())
+					{
+						std::cout << "correct!!" << std::endl;
+						next_state = PATTERN_DELIVERY;
+					}
+					return;
+				};
+				MemoryPattern::Direction dir = pattern.pattern[recall_tile_index];
+				if (evt.key.type == SDL_KEYDOWN)
+				{
+					if (evt.key.keysym.sym == SDLK_UP || evt.key.keysym.sym == SDLK_w)
+					{
+						check_input(dir);
+					} else if (evt.key.keysym.sym == SDLK_DOWN || evt.key.keysym.sym == SDLK_s)
+					{
+						check_input(dir);
+					} else if (evt.key.keysym.sym == SDLK_LEFT || evt.key.keysym.sym == SDLK_a)
+					{
+						check_input(dir);
+					} else if (evt.key.keysym.sym == SDLK_RIGHT || evt.key.keysym.sym == SDLK_d)
+					{
+						check_input(dir);
+					}
+					recall_tile_index ++;
+				}
+
+			}
+			break;
+		case FINISH:
+			break;
+		case NONE:
+			break;
 	}
 
 	return false;
@@ -141,7 +187,7 @@ bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window
 
 void MemoryGameMode::start()
 {
-	pattern.beginDrawing();
+	curr_state = INIT;
 }
 
 void MemoryGameMode::update(float elapsed) {
@@ -153,8 +199,33 @@ void MemoryGameMode::update(float elapsed) {
 		_START_CALLED = true;
 	}
 
+	// next state logic
+	switch (curr_state)
+	{
+		case INIT:
+			// INIT will transition into PATTERN_DELIVERY when the spacebar is 
+			// pressed
+			break;
+		case PATTERN_DELIVERY:
+			if (pattern.isDoneDrawing())
+			{
+				std::cout << "is done drawing" << std::endl;
+				next_state = PATTERN_RECALL;
+				recall_tile_index = 0;
+			} else {
+				pattern.update(elapsed);
+			}
+			break;
+		case PATTERN_RECALL: // next state logic defined in handle_input	
+			break;
+		case FINISH:
+			break;
+		case NONE:
+			break;
+	}
+
 	static std::mt19937 mt; //mersenne twister pseudo-random number generator
-	pattern.update(elapsed);
+	//std::cout << curr_state << std::endl; 
 }
 
 void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
@@ -166,21 +237,29 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 	// const float shadow_offset = 0.07f;
 	const float padding = 0.14f; //padding between outside of walls and edge of window
 
-	// ----- draw the memory patttern -----
-	pattern.draw(court_radius);
 
-	{ // Add vertex data from MemoryPattern
-		for (auto v = pattern.vertices.begin(); v < pattern.vertices.end(); v++)
-		{
-			vertices.emplace_back(*v);
-		}
+	// ----- draw items based on the current game state -----
+	switch (curr_state)
+	{
+		case INIT:
+			draw_init();
+			break;
+		case PATTERN_RECALL:
+			draw_pattern_recall();
+			break;
+		case PATTERN_DELIVERY:
+			draw_pattern_delivery();
+			break;
+		case FINISH:
+			draw_finish();
+			break;
+		case NONE:
+			std::cerr << "Game has entered NONE state, exiting... " << std::endl;
+			exit(0);
+			break;
 	}
 
-	//---- compute vertices to draw ----
-
-
-	//solid objects:
-
+	curr_state = next_state;
 	// walls:
 	draw_rectangle(vertices, glm::vec2(-court_radius.x-wall_radius, 0.0f), glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), fg_color);
 	draw_rectangle(vertices, glm::vec2( court_radius.x+wall_radius, 0.0f), glm::vec2(wall_radius, court_radius.y + 2.0f * wall_radius), fg_color);
@@ -277,4 +356,34 @@ void MemoryGameMode::draw(glm::uvec2 const &drawable_size) {
 
 	GL_ERRORS(); // PARANOIA: print errors just in case we did something wrong.
 
+}
+
+void MemoryGameMode::draw_init()
+{
+	// draw a blue plus-sign on the screen
+	glm::u8vec4 blue = HEX_TO_U8VEC4(0x00ffffff);
+	draw_rectangle(vertices, glm::vec2(0, 0), glm::vec2(court_radius.x / 16, court_radius.y / 2), blue);
+	draw_rectangle(vertices, glm::vec2(0, 0), glm::vec2(court_radius.x / 2, court_radius.x / 16), blue);
+}
+
+void MemoryGameMode::draw_pattern_delivery()
+{
+	pattern.draw(court_radius);
+
+	{ // Add vertex data from MemoryPattern
+		for (auto v = pattern.vertices.begin(); v < pattern.vertices.end(); v++)
+		{
+			vertices.emplace_back(*v);
+		}
+	}
+}
+
+void MemoryGameMode::draw_pattern_recall()
+{
+	
+}
+
+void MemoryGameMode::draw_finish()
+{
+	// draw a green plus-sign on the screen
 }

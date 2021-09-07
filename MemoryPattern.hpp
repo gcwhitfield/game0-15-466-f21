@@ -42,7 +42,13 @@ class MemoryPattern {
         MemoryPattern(int len);
         ~MemoryPattern();
 
-        bool isDoneDrawing() { return _t >= _drawDuration; };
+        bool isDoneDrawing() 
+            { 
+                std::cout << _t << std::endl;
+                std::cout << _drawDuration << std::endl;
+                std::cout << pattern.size() << std::endl;
+                return _t > _drawDuration;
+            };
         bool isDrawing() { return _t > 0.0f && _t < _drawDuration; };
         
         void beginDrawing();
@@ -62,7 +68,7 @@ class MemoryPattern {
         // start to finish. This variable is set by the beginDrawing method
         float _drawDuration;
 
-        float _timePerTile = 1; // in seconds
+        float _timePerTile = 20.0f; // in seconds
 
         glm::u8vec4 _top_tile_color = HEX_TO_U8VEC4(0x31afd4ff);
         glm::u8vec4 _left_tile_color = HEX_TO_U8VEC4(0x004fffff);
