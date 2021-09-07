@@ -7,15 +7,15 @@
 MemoryPattern::MemoryPattern(int len)
 {
     static std::mt19937 rand; 
-    pattern = std::vector<Direction>();
+    pattern = std::vector<Direction>(len);
     // vertices = std::vector<Vertex>();
     for (int i = 0; i < len; i++)
     {
         // the following line was inspired from enum tutorial on static casting
         // https://riptutorial.com/cplusplus/example/18751/enum-conversions
-        pattern.emplace_back(static_cast<Direction>(rand() % NUM_DIRECTIONS));
+        pattern[i] = static_cast<Direction>(rand() % NUM_DIRECTIONS);
     }
-    std::cout << "here is the pattern.size " << pattern.size() << std::endl;
+    std::cout << "here is the pattern.size " << pattern.size() << "here is pattern.len " << len << std::endl;
     _t = -0.01f;
     _drawDuration = pattern.size() * _timePerTile;
 }

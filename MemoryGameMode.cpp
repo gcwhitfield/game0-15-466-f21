@@ -15,12 +15,11 @@ MemoryGameMode::MemoryGameMode() {
 	}
 
 	// ----- set up game state -----
-	pattern = MemoryPattern(difficulty);
-	{
-		curr_state = INIT;
-		next_state = INIT;
-		difficulty = 1;
-	}
+	difficulty = 1;
+	pattern =  MemoryPattern(difficulty);
+	curr_state = INIT;
+	next_state = INIT;
+	
 
 	//----- allocate OpenGL resources -----
 	{ //vertex buffer:
@@ -143,16 +142,23 @@ bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window
 			{
 				auto check_input = [this](MemoryPattern::Direction d)
 				{
+					std::cout << "Given Input : " << d<< " Expected Input : " << pattern.pattern[recall_tile_index] << std::endl;
 					if (pattern.pattern[recall_tile_index] != d)
 					{
 						std::cout << "incorrect :(" << std::endl;
 						next_state = PATTERN_RECALL;
 						difficulty = 1;
-					} else if (recall_tile_index >= pattern.pattern.size())
-					{
-						std::cout << "correct!!" << std::endl;
-						next_state = PATTERN_DELIVERY;
+					} else {
+						if (recall_tile_index >= pattern.pattern.size() - 1)
+						{
+							std::cout << "correct!!" << std::endl;
+							next_state = PATTERN_DELIVERY;
+						} else {
+							recall_tile_index ++;
+						}
 					}
+					
+					
 					return;
 				};
 				MemoryPattern::Direction dir = pattern.pattern[recall_tile_index];
@@ -171,7 +177,6 @@ bool MemoryGameMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window
 					{
 						check_input(dir);
 					}
-					recall_tile_index ++;
 				}
 
 			}
